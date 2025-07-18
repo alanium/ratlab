@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="logo.png" type="image/png">
+  <title>Credencial Payments Food selector</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <h1>
+    <img src="logo.png" alt="Logo" style="height: 1em; vertical-align: middle;">
+    Official Food Selector for Credencial Payments ®
+  </h1>
+
+  <div class="container">
+    <div class="controls">
+      <div id="result"></div>
+
+      <label for="inputComidas">Comidas (separadas por coma):</label>
+      <input id="inputComidas" type="text" value="Pizza, Hamburguesa, Milanesa, Empanadas">
+
+      <label for="mazeSize">Tamaño del laberinto:</label>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button onclick="cambiarTamanio(-10)">➖</button>
+        <span id="mazeSizeDisplay">21</span>
+        <button onclick="cambiarTamanio(10)">➕</button>
+      </div>
+
+      <div>
+        <button onclick="generarLaberinto()">🎲 Generar nuevo laberinto</button>
+        <button onclick="soltarRata()">🐭 Soltar la rata</button>
+        <button onclick="reubicarComidas()">🔁 Reubicar comidas</button>
+      </div>
+    </div>
+
+    <div class="maze-layout">
+      <div id="maze"></div>
+      <ul id="leyenda"></ul>
+    </div>
+  </div>
+
+  <script src="js/maze.js"></script>
+</body>
+</html>
