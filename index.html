@@ -40,6 +40,29 @@
     </div>
   </div>
 
+  <div id="coinModal" class="modal">
+    <div class="modal-content">
+
+      <div class="coin-animation">
+  <div class="coin3d" id="coin3d">
+    <img class="cara" src="cara.png" alt="Cara">
+    <img class="cruz" src="cruz.png" alt="Cruz">
+  </div>
+</div>
+
+
+
+      <p>La rata llegó a una comida. Elegí: ¿cara o cruz?</p>
+      <div class="choices">
+        <button onclick="elegirMoneda('cara')">🪙 Cara</button>
+        <button onclick="elegirMoneda('cruz')">🪙 Cruz</button>
+      </div>
+      <p id="coinResult" class="coin-result"></p>
+
+    </div>
+  </div>
+
+
   <script src="js/maze.js"></script>
 </body>
 </html>

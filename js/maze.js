@@ -3,9 +3,13 @@ let comidas = [];
 let maze = [], elements = [];
 let ratas = [];
 
+let currentRatInterval = null;
+let currentFoodCell = null;
+let currentComida = null;
+let ratIdActivo = null;
+
 const mazeDiv = document.getElementById("maze");
 const resultDiv = document.getElementById("result");
-
 
 function cambiarTamanio(delta) {
   size += delta;
@@ -126,30 +130,79 @@ function moveRat() {
     newCell.dataset.rat = ratId;
 
     if (newCell.classList.contains("food")) {
-      ratas.forEach(r => clearInterval(r.interval));
-      ratas = [];
+      clearInterval(interval);
+      currentRatInterval = interval;
+      currentFoodCell = newCell;
+      currentComida = newCell.dataset.food;
+      ratIdActivo = ratId;
+      mostrarModal();
+    }
+  }, 100);
 
-      const comida = newCell.dataset.food;
-      const mensaje = `🐭 Ratita ${ratId} llegó a la opción ${newCell.textContent}: ${comida} 😋`;
-      resultDiv.textContent += mensaje + "\n";
+  ratas.push({ id: ratId, interval });
+}
+
+function mostrarModal() {
+  document.getElementById("coinModal").style.display = "flex";
+  document.getElementById("coinResult").textContent = "";
+}
+
+function ocultarModal() {
+  document.getElementById("coinModal").style.display = "none";
+}
+
+function elegirMoneda(eleccion) {
+  const coin = document.getElementById("coin3d");
+  const resultText = document.getElementById("coinResult");
+
+  const resultado = Math.random() < 0.5 ? "cara" : "cruz";
+
+  // reset transición instantáneamente
+  coin.style.transition = "none";
+  coin.style.transform = "rotateY(0deg)";
+  void coin.offsetWidth; // reflow
+
+  // girar con animación
+  coin.style.transition = "transform 1s ease-in-out";
+  const vueltas = 2;
+  const finalAngle = resultado === "cara" ? 360 * vueltas : 180 + 360 * vueltas;
+  coin.style.transform = `rotateY(${finalAngle}deg)`;
+
+  // mostrar resultado luego del giro
+  setTimeout(() => {
+    if (eleccion === resultado) {
+      resultText.textContent = `¡Salió ${resultado}! ¡Ganaste la comida ${currentComida}! 🎉`;
+
+      resultDiv.textContent += `🐭 Ratita ${ratIdActivo} ganó la comida: ${currentComida} 😋\n`;
       resultDiv.classList.add("highlight");
       resultDiv.scrollIntoView({ behavior: "smooth", block: "center" });
-
-      setTimeout(() => {
-        resultDiv.classList.remove("highlight");
-      }, 10000);
-
 
       confetti({
         particleCount: 150,
         spread: 70,
         origin: { y: 0.6 }
       });
-    }
-  }, 100);
 
-  ratas.push({ id: ratId, interval });
+      ratas = [];
+      setTimeout(ocultarModal, 3000);
+    } else {
+      resultText.textContent = `Salió ${resultado}. Perdiste la comida ${currentComida} 😢\n¡La rata seguirá buscando!`;
+
+      currentFoodCell.classList.remove("food");
+      currentFoodCell.classList.add("path");
+      currentFoodCell.textContent = "";
+      delete currentFoodCell.dataset.food;
+
+      setTimeout(() => {
+        ocultarModal();
+        resultDiv.textContent += `❌ Comida ${currentComida} eliminada. Continuando...\n`;
+        moveRat();
+      }, 2500);
+    }
+  }, 1000);
 }
+
+
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
